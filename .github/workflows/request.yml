@@ -74,7 +74,7 @@ jobs:
                       }
                       dst = 'quay.io/dhcr/' + (dst || src.replace(re, ''))
                       core.notice('Copy from', src, 'to', dst)
-                      exec.exec('crane', ['copy', src, dst, '--platform', 'linux/amd64'])
+                      await exec.exec('crane', ['copy', src, dst, '--platform', 'linux/amd64'])
                   }
 
                   await github.rest.issues.removeLabel({
