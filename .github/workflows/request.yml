@@ -16,6 +16,11 @@ jobs:
     - name: Install crane
       uses: IAreKyleW00t/crane-installer@v1.3
 
+    - name: Login quay.io
+      shell: bash
+      run: |
+        crane auth login quay.io -u "${{ secrets.QUAY_USERNAME }}" -p "${{ secrets.QUAY_PASSWORD }}"
+
     - name: Copy Images
       id: doMirror
       uses: actions/github-script@v7
