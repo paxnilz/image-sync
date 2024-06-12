@@ -60,7 +60,7 @@ jobs:
                       labels: [ "work-in-progress" ],
                   })
 
-                  const re = new RegExp("^[^/]+\.[^/]+/")
+                  const re = /^[^\/]+\.[^\/]+\//
                   let specs = event.issue.body.split(/\r?\n/)
                   for (let l of specs) {
                       let [src, dst] = l.split(/\s+/)
