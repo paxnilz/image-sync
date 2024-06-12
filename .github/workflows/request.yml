@@ -69,7 +69,7 @@ jobs:
                       }
                       dst = 'quay.io/dhcr/' + (dst || src.replace(re, ''))
                       core.notice('Copy from', src, 'to', dst)
-                      exec('crane', [src, dst, '--platform', 'linux/amd64'])
+                      exec.exec('crane', [src, dst, '--platform', 'linux/amd64'])
                   }
 
                   core.setOutput('CHECKED', true)
