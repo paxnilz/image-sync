@@ -77,29 +77,17 @@ jobs:
                       exec.exec('crane', ['copy', src, dst, '--platform', 'linux/amd64'])
                   }
 
-                  core.setOutput('CHECKED', true)
+                  await github.rest.issues.removeLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: num,
+                      name: "work-in-progress",
+                  })
+                  await github.rest.issues.update({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: num,
+                      state: 'closed',
+                  })
               }
           }
-
-    - name: Close issue
-      if: steps.checkIssue.outputs.CHECKED
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs')
-          const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"))
-
-          let num = event.issue.number
-
-          await github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: num,
-              name: "work-in-progress",
-          })
-          await github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: num,
-              state: 'closed',
-          })
