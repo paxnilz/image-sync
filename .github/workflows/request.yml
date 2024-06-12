@@ -67,7 +67,8 @@ jobs:
                       if (src === '') {
                           continue
                       }
-                      dst = 'quay.io/dhcr/' + (dst || src.replace(r, ''))
+                      dst = 'quay.io/dhcr/' + (dst || src.replace(re, ''))
+                      console.notice('Copy from', src, 'to', dst)
                       exec('crane', [src, dst, '--platform', 'linux/amd64'])
                   }
 
