@@ -1,3 +1,5 @@
+name: Daily update
+
 on:
   schedule:
   - cron: "17 10 * * *"
@@ -6,9 +8,6 @@ on:
 jobs:
   mirror:
     runs-on: ubuntu-latest
-
-    permissions:
-      issues: write
 
     steps:
     - name: crane-installer
@@ -21,4 +20,7 @@ jobs:
         crane-copy () {
             crane copy $1 quay.io/dhcr/$1 --platform linux/amd64
         }
+        crane-copy eclipse-temurin:8-jdk
+        crane-copy eclipse-temurin:21-jdk
+        crane-copy node:16-alpine
         crane-copy node:18-alpine

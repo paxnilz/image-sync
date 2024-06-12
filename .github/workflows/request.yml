@@ -1,0 +1,99 @@
+name: Manually request
+
+on:
+  issues:
+    types:
+    - labeled
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+
+    steps:
+    - name: Install crane
+      uses: IAreKyleW00t/crane-installer@v1.3
+
+    - name: Copy Images
+      id: doMirror
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs')
+          const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"))
+
+          if (event.issue && event.action === "labeled") {
+              if (event.issue.state != "open") {
+                  core.notice("Issue not open") // DEBUG
+                  process.exit(0);
+              }
+
+              if (! event.issue.user.login.match(/^paxnilz?$/)) {
+                  core.notice("Issue not by owner") // DEBUG
+                  process.exit(0);
+              }
+
+              let labels = event.issue.labels.map(l => l.name)
+              if (labels.indexOf("mirror-request") == -1) {
+                  core.notice("Issue not a mirror-request issue") // DEBUG
+                  process.exit(0);
+              }
+
+              let num = event.issue.number
+
+              if (labels.indexOf("work-in-progress") == -1) {
+                  await github.rest.issues.createComment({
+                      owner: process.env.REPO_OWNER,
+                      repo: process.env.REPO_NAME,
+                      issue_number: num,
+                      body: 'Handled by [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})',
+                  })
+
+                  let src = event.issue.title
+
+                  await github.rest.issues.addLabels({
+                      owner: process.env.REPO_OWNER,
+                      repo: process.env.REPO_NAME,
+                      issue_number: num,
+                      labels: [ "work-in-progress" ],
+                  })
+
+                  const exec = require('@actions/exec')
+                  const re = new RegExp("^[^/]+\.[^/]+/")
+                  let specs = event.issue.body.split(/\r?\n/)
+                  for (let l of specs) {
+                      let [src, dst] = l.split(/\s+/)
+                      if (src === '') {
+                          continue
+                      }
+                      exec('crane', [x, y || x.replace(r, ''), '--platform', 'linux/amd64'])
+                  }
+
+                  core.setOutput('CHECKED', true)
+              }
+          }
+
+    - name: Close issue
+      if: steps.checkIssue.outputs.CHECKED
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs')
+          const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"))
+
+          let num = event.issue.number
+
+          await github.rest.issues.removeLabel({
+              owner: process.env.REPO_OWNER,
+              repo: process.env.REPO_NAME,
+              issue_number: num,
+              name: "work-in-progress",
+          })
+          await github.rest.issues.update({
+              owner: process.env.REPO_OWNER,
+              repo: process.env.REPO_NAME,
+              issue_number: num,
+              state: 'closed',
+          })
