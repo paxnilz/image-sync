@@ -45,8 +45,8 @@ jobs:
 
               if (labels.indexOf("work-in-progress") == -1) {
                   await github.rest.issues.createComment({
-                      owner: process.env.REPO_OWNER,
-                      repo: process.env.REPO_NAME,
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
                       issue_number: num,
                       body: 'Handled by [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})',
                   })
@@ -54,8 +54,8 @@ jobs:
                   let src = event.issue.title
 
                   await github.rest.issues.addLabels({
-                      owner: process.env.REPO_OWNER,
-                      repo: process.env.REPO_NAME,
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
                       issue_number: num,
                       labels: [ "work-in-progress" ],
                   })
@@ -86,14 +86,14 @@ jobs:
           let num = event.issue.number
 
           await github.rest.issues.removeLabel({
-              owner: process.env.REPO_OWNER,
-              repo: process.env.REPO_NAME,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               issue_number: num,
               name: "work-in-progress",
           })
           await github.rest.issues.update({
-              owner: process.env.REPO_OWNER,
-              repo: process.env.REPO_NAME,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               issue_number: num,
               state: 'closed',
           })
