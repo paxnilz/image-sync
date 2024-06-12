@@ -60,7 +60,6 @@ jobs:
                       labels: [ "work-in-progress" ],
                   })
 
-                  const exec = require('@actions/exec')
                   const re = new RegExp("^[^/]+\.[^/]+/")
                   let specs = event.issue.body.split(/\r?\n/)
                   for (let l of specs) {
