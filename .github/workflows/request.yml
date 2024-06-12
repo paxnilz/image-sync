@@ -67,7 +67,8 @@ jobs:
                       if (src === '') {
                           continue
                       }
-                      exec('crane', [x, y || x.replace(r, ''), '--platform', 'linux/amd64'])
+                      dst = 'quay.io/dhcr/' + (dst || src.replace(r, ''))
+                      exec('crane', [src, dst, '--platform', 'linux/amd64'])
                   }
 
                   core.setOutput('CHECKED', true)
