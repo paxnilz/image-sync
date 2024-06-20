@@ -24,6 +24,8 @@ jobs:
         crane-copy eclipse-temurin:8-jdk
         crane-copy eclipse-temurin:11-jre
         crane-copy eclipse-temurin:11-jdk
+        crane-copy eclipse-temurin:17-jre
+        crane-copy eclipse-temurin:17-jdk
         crane-copy eclipse-temurin:21-jre
         crane-copy eclipse-temurin:21-jdk
         crane-copy node:16-alpine
