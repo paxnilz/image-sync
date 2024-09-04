@@ -30,3 +30,4 @@ jobs:
         crane-copy eclipse-temurin:21-jdk
         crane-copy node:16-alpine
         crane-copy node:18-alpine
+        crane-copy node:20-alpine
